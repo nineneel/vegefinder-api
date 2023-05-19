@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\TypeGroup;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -11,13 +12,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('types', function (Blueprint $table) {
             $table->id();
+            $table->foreignIdFor(TypeGroup::class);
             $table->string('name');
-            $table->string('email')->unique();
-            $table->string('password');
-            $table->string('thumbnail');
-            $table->enum('register_method', ['manual', 'google', 'facebook']);
+            $table->text('description');
             $table->timestamps();
         });
     }
@@ -27,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('types');
     }
 };
