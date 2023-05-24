@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignIdFor(TypeGroup::class);
             $table->string('name');
             $table->text('description');
+            $table->string('thumbnail');
             $table->timestamps();
         });
     }
