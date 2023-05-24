@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Avatar;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -16,7 +17,8 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->string('password');
-            $table->string('thumbnail');
+            $table->string('api_token')->unique()->nullable()->default(null);
+            $table->foreignIdFor(Avatar::class);
             $table->enum('register_method', ['manual', 'google', 'facebook']);
             $table->timestamps();
         });
