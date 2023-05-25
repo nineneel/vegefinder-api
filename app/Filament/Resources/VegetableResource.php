@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\VegetableResource\Pages;
 use App\Filament\Resources\VegetableResource\RelationManagers;
+use App\Filament\Resources\VegetableResource\Widgets\VegetableStatsOverview;
 use App\Models\Type;
 use App\Models\Vegetable;
 use Filament\Forms;
@@ -20,6 +21,7 @@ use Filament\Resources\Table;
 use Filament\Tables;
 use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\TagsColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Contracts\HasTable;
 use stdClass;
@@ -145,12 +147,7 @@ class VegetableResource extends Resource
                     }
                 ),
                 TextColumn::make('name')->searchable()->sortable(),
-                BadgeColumn::make('types.name')
-                    ->colors([
-                        'primary',
-                    ]),
-                ImageColumn::make('thumbnail')->label('Thumbnail')
-                    ->disk('gcs'),
+                TagsColumn::make('types.name'),
                 TextColumn::make('description')
                     ->words(25)
                     ->size('sm')
@@ -169,6 +166,13 @@ class VegetableResource extends Resource
     {
         return [
             //
+        ];
+    }
+
+    public static function getWidgets(): array
+    {
+        return [
+            VegetableStatsOverview::class,
         ];
     }
 
