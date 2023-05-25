@@ -24,7 +24,8 @@ class User extends Authenticatable
         'email',
         'password',
         'thumbnail',
-        'register_method'
+        'register_method',
+        'avatar_id'
     ];
 
     /**
@@ -53,11 +54,11 @@ class User extends Authenticatable
 
     public function vegetable_saveds(): BelongsToMany
     {
-        return $this->belongsToMany(Vegetable::class, 'user_id', 'vegetable_id')->using(Saved::class)->withTimestamps();
+        return $this->belongsToMany(Vegetable::class, 'saveds')->withTimestamps();
     }
 
     public function roles(): BelongsToMany
     {
-        return $this->belongsToMany(Role::class, 'user_id', 'role_id')->using(UserRole::class)->withTimestamps();
+        return $this->belongsToMany(Role::class, 'user_roles');
     }
 }

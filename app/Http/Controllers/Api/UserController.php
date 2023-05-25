@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request): User
     {
         return $request->user();
     }
@@ -23,7 +23,7 @@ class UserController extends Controller
         ]);
 
         $validatedData['register_method'] = 'manual';
-        $validatedData['thumbnail'] = $request->avatar;
+        $validatedData['avatar_id'] = $request->avatar;
         $validatedData['password'] = bcrypt($request->password);
 
         $newUser = User::create($validatedData);

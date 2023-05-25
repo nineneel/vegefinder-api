@@ -13,6 +13,10 @@ class Vegetable extends Model
 
     protected $guarded = ['id'];
 
+    protected $casts = [
+        'images' => 'array',
+    ];
+
     public function images(): HasMany
     {
         return $this->hasMany(VegetableImage::class);
@@ -20,11 +24,11 @@ class Vegetable extends Model
 
     public function user_saveds(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'user_id', 'vegetable_id')->using(Saved::class)->withTimestamps();
+        return $this->belongsToMany(User::class, 'saveds')->withTimestamps();
     }
 
     public function types(): BelongsToMany
     {
-        return $this->belongsToMany(Type::class, 'vegetable_id', 'type_id')->using(VegetablesType::class);
+        return $this->belongsToMany(Type::class, 'vegetables_types');
     }
 }
