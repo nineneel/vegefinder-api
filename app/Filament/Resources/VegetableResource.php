@@ -108,11 +108,10 @@ class VegetableResource extends Resource
                                     ->schema([
                                         CheckboxList::make('type_id')
                                             ->label('Type')
-                                            ->relationship('types', 'name')->searchable()
+                                            ->relationship('types', 'name')
                                             ->options(Type::all()->pluck('name', 'id'))
                                             ->required()
                                             ->columns(2),
-
                                     ]),
                                 Card::make()
                                     ->schema([

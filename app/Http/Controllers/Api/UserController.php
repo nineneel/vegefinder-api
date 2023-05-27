@@ -3,9 +3,13 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Role;
 use App\Models\User;
+use App\Models\UserRole;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -14,7 +18,7 @@ class UserController extends Controller
         return $request->user();
     }
 
-    public function register(Request $request): User
+    public function register(Request $request)
     {
         $validatedData = $request->validate([
             'name' => "required",
@@ -26,7 +30,23 @@ class UserController extends Controller
         $validatedData['avatar_id'] = $request->avatar;
         $validatedData['password'] = bcrypt($request->password);
 
-        $newUser = User::create($validatedData);
+        DB::beginTransaction();
+
+        try {
+            $newUser = User::create($validatedData);
+
+            UserRole::create([
+                'user_id' => $newUser->id,
+                'role_id' => 2, // normal user
+            ]);
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                "status" => "failed",
+                "message" => $e->getMessage()
+            ]);
+        }
 
         return $newUser;
     }
