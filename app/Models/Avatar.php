@@ -5,12 +5,24 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Storage;
 
 class Avatar extends Model
 {
     use HasFactory;
 
     protected $guarded = ['id'];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function ($avatar) {
+            if ($avatar->file_name) {
+                Storage::disk('gcs')->delete($avatar->file_name);
+            }
+        });
+    }
 
     public function users(): HasMany
     {

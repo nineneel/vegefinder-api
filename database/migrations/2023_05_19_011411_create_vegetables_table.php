@@ -14,8 +14,9 @@ return new class extends Migration
         Schema::create('vegetables', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('other_name');
+            $table->string('other_name')->nullable()->default(null);
             $table->string('thumbnail');
+            $table->string('images');
             $table->text('description');
             $table->string('description_source');
             $table->text('how_to_plant');
