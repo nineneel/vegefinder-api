@@ -14,7 +14,9 @@ use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Pages\Page;
 use Filament\Resources\Form;
+use Filament\Resources\Pages\CreateRecord;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
@@ -22,6 +24,7 @@ use Filament\Tables\Columns\TagsColumn;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Hash;
 
 class UserResource extends Resource
 {
@@ -44,14 +47,20 @@ class UserResource extends Resource
                                     ->required()->columnSpan(2),
                                 TextInput::make('email')
                                     ->email()
-                                    ->unique('users')
+                                    ->unique(fn (Page $livewire): string => $livewire instanceof CreateRecord ? 'users' : false)
                                     ->required()->columnSpan(2),
                                 TextInput::make('password')
-                                    ->confirmed()
+                                    ->password()
                                     ->minLength(6)
-                                    ->required(),
-                                TextInput::make('password_confirmed')
-                                    ->required(),
+                                    ->same('password_confirmation')
+                                    ->dehydrated(fn ($state) => filled($state))
+                                    ->dehydrateStateUsing(fn ($state) => Hash::make($state))
+                                    ->required(fn (Page $livewire): bool => $livewire instanceof CreateRecord),
+                                TextInput::make('password_confirmation')
+                                    ->password()
+                                    ->label("Password Confirmation")
+                                    ->dehydrated(false)
+                                    ->required(fn (Page $livewire): bool => $livewire instanceof CreateRecord),
                             ])->columns(2)->columnSpan(2),
                         Card::make()
                             ->schema([
@@ -61,7 +70,8 @@ class UserResource extends Resource
                                     ->options(Role::all()->pluck('name', 'id'))
                                     ->required()
                                     ->columns(2),
-                                Select::make('avatar')
+                                Select::make('avatar_id')
+                                    ->label('Avatar')
                                     ->options(Avatar::all()->pluck('name', 'id'))
                                     ->required()
                             ])->columnSpan(1)
@@ -73,7 +83,8 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('name')->searchable(),
+                TextColumn::make('name')->searchable()->sortable(),
+                TextColumn::make('email')->searchable()->sortable(),
                 TagsColumn::make('roles.name')
             ])
             ->filters([
