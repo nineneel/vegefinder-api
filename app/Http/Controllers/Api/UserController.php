@@ -3,22 +3,22 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Role;
 use App\Models\User;
 use App\Models\UserRole;
 use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
-    public function index(Request $request): User
+    public function index(Request $request): JsonResponse
     {
-        return $request->user();
+        return response()->json($request->user());
     }
 
-    public function register(Request $request)
+    public function register(Request $request): JsonResponse
     {
         $validatedData = $request->validate([
             'name' => "required",
@@ -48,10 +48,14 @@ class UserController extends Controller
             ]);
         }
 
-        return $newUser;
+        return response()->json([
+            'status' => 'success',
+            'message' => 'User Created Successfully',
+            'result' => $newUser
+        ], 201);
     }
 
-    public function login(Request $request)
+    public function login(Request $request): JsonResponse
     {
         $credentials = $request->validate([
             'email' => 'required|email',
