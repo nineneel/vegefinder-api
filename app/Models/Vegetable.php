@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Auth;
 
 class Vegetable extends Model
 {
@@ -17,10 +19,6 @@ class Vegetable extends Model
         'images' => 'array',
     ];
 
-    public function images(): HasMany
-    {
-        return $this->hasMany(VegetableImage::class);
-    }
 
     public function user_saveds(): BelongsToMany
     {
