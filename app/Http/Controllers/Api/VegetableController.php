@@ -6,9 +6,13 @@ use App\Http\Controllers\Controller;
 use App\Models\Saved;
 use App\Models\Vegetable;
 use Exception;
+use GuzzleHttp\Client;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+// use Illuminate\Support\Facades\Request;
+
+use Illuminate\Http\Request;
 
 class VegetableController extends Controller
 {
@@ -103,5 +107,50 @@ class VegetableController extends Controller
             'status' => 'success',
             'message' => $message,
         ]);
+    }
+
+    /**
+     * predict
+     *
+     * @param  mixed $request
+     * @return JsonResponse
+     */
+    public function predict(Request $request): JsonResponse
+    {
+        $image = $request->file('image');
+
+        if ($image === null || $image->getClientOriginalName() === "") {
+            return response()->json(['status' => 'failed', 'message' => 'No file'], 400);
+        }
+
+        try {
+            $imageBytes = file_get_contents($image->getRealPath());
+
+            $predictUrl = "http://127.0.0.1:5000";
+
+            $client = new Client();
+
+            $response = $client->post($predictUrl, [
+                'multipart' => [
+                    [
+                        'name' => 'file',
+                        'contents' => $imageBytes,
+                        'filename' => $image->getClientOriginalName()
+                    ]
+                ]
+            ]);
+        } catch (Exception $e) {
+            return response()->json(['status' => 'failed', 'message' => $e->getMessage()], 500);
+        }
+
+        $responseData = json_decode($response->getBody(), true);
+
+        if ($responseData['status'] === 'failed') {
+            return response()->json(['status' => 'failed', 'message' => "These Vegetable do not match our records."], 404);
+        }
+        $className =  $responseData["prediction"];
+        $vegetable = Vegetable::where('class_name', $className)->with('types')->first();
+
+        return response()->json(['status' => 'success', "vegetable" => $vegetable], 200);
     }
 }

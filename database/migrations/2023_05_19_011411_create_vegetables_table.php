@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('vegetables', function (Blueprint $table) {
             $table->id();
+            $table->string('class_name');
             $table->string('name');
             $table->string('other_name')->nullable()->default(null);
             $table->string('thumbnail');

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\VegetableController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 
@@ -17,3 +18,5 @@ use Illuminate\Support\Facades\Storage;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::post('/predict', [VegetableController::class, 'predict'])->name('predict');
