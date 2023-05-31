@@ -11,13 +11,28 @@ class Type extends Model
 {
     use HasFactory;
 
+    /**
+     * guarded
+     *
+     * @var array
+     */
     protected $guarded = ['id'];
 
+    /**
+     * type_group
+     *
+     * @return BelongsTo
+     */
     public function type_group(): BelongsTo
     {
         return $this->belongsTo(TypeGroup::class);
     }
 
+    /**
+     * vegetables
+     *
+     * @return BelongsToMany
+     */
     public function vegetables(): BelongsToMany
     {
         return $this->belongsToMany(Vegetable::class, 'vegetable_id', 'type_id')->using(VegetablesType::class);

@@ -9,5 +9,10 @@ class UserRole extends Model
 {
     use HasFactory;
 
+    /**
+     * guarded
+     *
+     * @var array
+     */
     protected $guarded = ['id'];
 }

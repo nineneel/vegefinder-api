@@ -52,26 +52,51 @@ class User extends Authenticatable implements FilamentUser
         'email_verified_at' => 'datetime',
     ];
 
+    /**
+     * canAccessFilament
+     *
+     * @return bool
+     */
     public function canAccessFilament(): bool
     {
         return true;
     }
 
+    /**
+     * avatar
+     *
+     * @return BelongsTo
+     */
     public function avatar(): BelongsTo
     {
         return $this->belongsTo(Avatar::class);
     }
 
+    /**
+     * vegetable_saveds
+     *
+     * @return BelongsToMany
+     */
     public function vegetable_saveds(): BelongsToMany
     {
         return $this->belongsToMany(Vegetable::class, 'saveds')->withTimestamps();
     }
 
+    /**
+     * roles
+     *
+     * @return BelongsToMany
+     */
     public function roles(): BelongsToMany
     {
         return $this->belongsToMany(Role::class, 'user_roles')->withTimestamps();
     }
 
+    /**
+     * isAdmin
+     *
+     * @return Attribute
+     */
     protected function isAdmin(): Attribute
     {
         return Attribute::make(

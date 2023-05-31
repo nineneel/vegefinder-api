@@ -10,8 +10,18 @@ class TypeGroup extends Model
 {
     use HasFactory;
 
+    /**
+     * guarded
+     *
+     * @var array
+     */
     protected $guarded = ['id'];
 
+    /**
+     * types
+     *
+     * @return HasMany
+     */
     public function types(): HasMany
     {
         return $this->hasMany(Type::class);

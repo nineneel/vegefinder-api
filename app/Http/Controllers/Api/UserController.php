@@ -13,11 +13,27 @@ use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
+    /**
+     * index
+     *
+     * Get a logged user.
+     *
+     * @param  mixed $request
+     * @return JsonResponse
+     */
     public function index(Request $request): JsonResponse
     {
         return response()->json($request->user());
     }
 
+    /**
+     * register
+     *
+     * Register new user.
+     *
+     * @param  mixed $request
+     * @return JsonResponse
+     */
     public function register(Request $request): JsonResponse
     {
         $validatedData = $request->validate([
@@ -55,6 +71,14 @@ class UserController extends Controller
         ], 201);
     }
 
+    /**
+     * login
+     *
+     *
+     *
+     * @param  mixed $request
+     * @return JsonResponse
+     */
     public function login(Request $request): JsonResponse
     {
         $credentials = $request->validate([
@@ -78,7 +102,13 @@ class UserController extends Controller
         ]);
     }
 
-    public function logout(Request $request)
+    /**
+     * logout
+     *
+     * @param  mixed $request
+     * @return JsonResponse
+     */
+    public function logout(Request $request): JsonResponse
     {
         User::find($request->user()->id)->forceFill(['api_token' => null])->save();
 

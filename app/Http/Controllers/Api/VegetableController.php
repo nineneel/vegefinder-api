@@ -12,6 +12,11 @@ use Illuminate\Support\Facades\DB;
 
 class VegetableController extends Controller
 {
+    /**
+     * getAllVegetable
+     *
+     * @return JsonResponse
+     */
     public function getAllVegetable(): JsonResponse
     {
         $vegetables = Vegetable::with('types')->orderBy('created_at', 'asc')->get();
@@ -26,9 +31,16 @@ class VegetableController extends Controller
         return response()->json([
             'status' => 'success',
             'message' => 'Vegetables fetch Successfully',
+            'vegetable' => $vegetables
         ]);
     }
 
+    /**
+     * getDetailVegetable
+     *
+     * @param  mixed $vegetable_id
+     * @return JsonResponse
+     */
     public function getDetailVegetable($vegetable_id): JsonResponse
     {
         $user = Auth::user();
@@ -51,6 +63,12 @@ class VegetableController extends Controller
         ], 200);
     }
 
+    /**
+     * saveVegetable
+     *
+     * @param  mixed $vegetable_id
+     * @return JsonResponse
+     */
     public function saveVegetable($vegetable_id): JsonResponse
     {
         $user = Auth::user();

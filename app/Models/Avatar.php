@@ -11,8 +11,18 @@ class Avatar extends Model
 {
     use HasFactory;
 
+    /**
+     * guarded
+     *
+     * @var array
+     */
     protected $guarded = ['id'];
 
+    /**
+     * boot
+     *
+     * @return void
+     */
     protected static function boot()
     {
         parent::boot();
@@ -24,6 +34,11 @@ class Avatar extends Model
         });
     }
 
+    /**
+     * users
+     *
+     * @return HasMany
+     */
     public function users(): HasMany
     {
         return $this->hasMany(User::class);

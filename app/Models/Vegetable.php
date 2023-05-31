@@ -13,18 +13,38 @@ class Vegetable extends Model
 {
     use HasFactory;
 
+    /**
+     * guarded
+     *
+     * @var array
+     */
     protected $guarded = ['id'];
 
+    /**
+     * casts
+     *
+     * @var array
+     */
     protected $casts = [
         'images' => 'array',
     ];
 
 
+    /**
+     * user_saveds
+     *
+     * @return BelongsToMany
+     */
     public function user_saveds(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'saveds')->withTimestamps();
     }
 
+    /**
+     * types
+     *
+     * @return BelongsToMany
+     */
     public function types(): BelongsToMany
     {
         return $this->belongsToMany(Type::class, 'vegetables_types');
