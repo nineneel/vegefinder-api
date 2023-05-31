@@ -48,7 +48,8 @@ class VegetableResource extends Resource
                             ->schema([
                                 Grid::make(2)
                                     ->schema([
-                                        TextInput::make('name')->placeholder("Vegetable Name")->required(),
+                                        TextInput::make('name')->placeholder("Vegetable Name")->required()->columnSpan(2),
+                                        TextInput::make('class_name')->placeholder("Vegetable Class")->required(),
                                         TextInput::make('other_name')->placeholder("Latin Name"),
                                     ]),
                                 FileUpload::make('thumbnail')
