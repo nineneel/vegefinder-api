@@ -67,4 +67,4 @@ You can now access the server at http://localhost:8000
 
 ## License
 
-This package is licensed under the MIT License - see the LICENSE file for details
+Licensed under the MIT License - see the LICENSE file for details

@@ -40,6 +40,11 @@ class Vegetable extends Model
         return $this->belongsToMany(User::class, 'saveds')->withTimestamps();
     }
 
+    public function user_histories(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'histories')->withPivot('created_at', 'updated_at');
+    }
+
     /**
      * types
      *

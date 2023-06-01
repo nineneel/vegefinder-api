@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\HomeController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\VegetableController;
 use Illuminate\Http\Request;
@@ -33,5 +34,13 @@ Route::middleware(['auth:api'])->group(function () {
         Route::get('vegetables', 'getAllVegetable');
         Route::get('vegetables/{id}', 'getDetailVegetable');
         Route::post('vegetables/{id}/save', 'saveVegetable');
+    });
+
+    // Home Controller
+    Route::controller(HomeController::class)->group(function () {
+        Route::get('home', 'index');
+        Route::get('histories', 'histories');
+        Route::get('saveds', 'saveds');
+        Route::post('predict', 'predict');
     });
 });

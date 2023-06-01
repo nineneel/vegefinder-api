@@ -3,12 +3,17 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\History;
 use App\Models\Saved;
 use App\Models\Vegetable;
 use Exception;
+use GuzzleHttp\Client;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+// use Illuminate\Support\Facades\Request;
+
+use Illuminate\Http\Request;
 
 class VegetableController extends Controller
 {
@@ -28,11 +33,7 @@ class VegetableController extends Controller
             ]);
         }
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Vegetables fetch Successfully',
-            'vegetable' => $vegetables
-        ]);
+        return response()->json($vegetables);
     }
 
     /**
@@ -69,7 +70,7 @@ class VegetableController extends Controller
      * @param  mixed $vegetable_id
      * @return JsonResponse
      */
-    public function saveVegetable($vegetable_id): JsonResponse
+    public function saveVegetable(int $vegetable_id): JsonResponse
     {
         $user = Auth::user();
         $vegetableId = $vegetable_id;

@@ -82,6 +82,11 @@ class User extends Authenticatable implements FilamentUser
         return $this->belongsToMany(Vegetable::class, 'saveds')->withTimestamps();
     }
 
+    public function vegetable_histories(): BelongsToMany
+    {
+        return $this->belongsToMany(Vegetable::class, 'histories')->withPivot('created_at', 'updated_at');
+    }
+
     /**
      * roles
      *
