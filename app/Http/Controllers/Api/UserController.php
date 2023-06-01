@@ -23,7 +23,9 @@ class UserController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        return response()->json($request->user());
+        $user_id = Auth::user()->id;
+        $user = User::where('id', $user_id)->with('avatar')->first();
+        return response()->json($user);
     }
 
     /**

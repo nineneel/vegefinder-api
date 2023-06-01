@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\History;
 use App\Models\Saved;
 use App\Models\Vegetable;
 use Exception;
@@ -32,11 +33,7 @@ class VegetableController extends Controller
             ]);
         }
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Vegetables fetch Successfully',
-            'vegetable' => $vegetables
-        ]);
+        return response()->json($vegetables);
     }
 
     /**
@@ -73,7 +70,7 @@ class VegetableController extends Controller
      * @param  mixed $vegetable_id
      * @return JsonResponse
      */
-    public function saveVegetable($vegetable_id): JsonResponse
+    public function saveVegetable(int $vegetable_id): JsonResponse
     {
         $user = Auth::user();
         $vegetableId = $vegetable_id;
@@ -107,50 +104,5 @@ class VegetableController extends Controller
             'status' => 'success',
             'message' => $message,
         ]);
-    }
-
-    /**
-     * predict
-     *
-     * @param  mixed $request
-     * @return JsonResponse
-     */
-    public function predict(Request $request): JsonResponse
-    {
-        $image = $request->file('image');
-
-        if ($image === null || $image->getClientOriginalName() === "") {
-            return response()->json(['status' => 'failed', 'message' => 'No file'], 400);
-        }
-
-        try {
-            $imageBytes = file_get_contents($image->getRealPath());
-
-            $predictUrl = "http://127.0.0.1:5000";
-
-            $client = new Client();
-
-            $response = $client->post($predictUrl, [
-                'multipart' => [
-                    [
-                        'name' => 'file',
-                        'contents' => $imageBytes,
-                        'filename' => $image->getClientOriginalName()
-                    ]
-                ]
-            ]);
-        } catch (Exception $e) {
-            return response()->json(['status' => 'failed', 'message' => $e->getMessage()], 500);
-        }
-
-        $responseData = json_decode($response->getBody(), true);
-
-        if ($responseData['status'] === 'failed') {
-            return response()->json(['status' => 'failed', 'message' => "These Vegetable do not match our records."], 404);
-        }
-        $className =  $responseData["prediction"];
-        $vegetable = Vegetable::where('class_name', $className)->with('types')->first();
-
-        return response()->json(['status' => 'success', "vegetable" => $vegetable], 200);
     }
 }
