@@ -15,7 +15,7 @@
 
 ## Description
 
-VegeFinder is an application for...., this is the backend of this application.
+VegeFinder is an application that helps young people who want to start farming. The API is built using Laravel and requires PHP 8.1 and Laravel 10. It also integrates with Google Cloud Storage (GCS) for file storage.
 
 ## Requirements
 
