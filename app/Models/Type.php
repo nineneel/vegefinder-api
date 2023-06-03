@@ -19,6 +19,14 @@ class Type extends Model
     protected $guarded = ['id'];
 
     /**
+     * hidden
+     *
+     * @var array
+     */
+    protected $hidden = ['pivot'];
+
+
+    /**
      * type_group
      *
      * @return BelongsTo

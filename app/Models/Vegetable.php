@@ -29,6 +29,13 @@ class Vegetable extends Model
         'images' => 'array',
     ];
 
+    /**
+     * hidden
+     *
+     * @var array
+     */
+    protected $hidden = ['pivot'];
+
 
     /**
      * user_saveds

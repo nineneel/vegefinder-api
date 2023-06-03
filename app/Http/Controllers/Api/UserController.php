@@ -25,7 +25,10 @@ class UserController extends Controller
     {
         $user_id = Auth::user()->id;
         $user = User::where('id', $user_id)->with('avatar')->first();
-        return response()->json($user);
+        $avatar = $user->avatar->file_name;
+        $response = $user->only('id', 'name', 'email', 'api_token');
+        $response['avatar'] = $avatar;
+        return response()->json($response);
     }
 
     /**
@@ -63,12 +66,12 @@ class UserController extends Controller
             return response()->json([
                 "status" => "failed",
                 "message" => $e->getMessage()
-            ]);
+            ], 400);
         }
 
         return response()->json([
             'status' => 'success',
-            'message' => 'User Created Successfully',
+            'message' => 'user created successfully',
             'result' => $newUser
         ], 201);
     }
@@ -95,13 +98,16 @@ class UserController extends Controller
             User::find($user->id)->forceFill(['api_token' => $token])->save();
 
             return response()->json([
+                'status' => 'success',
+                'message' => 'Login successfully',
                 'token' => $token
-            ]);
+            ], 200);
         }
 
         return response()->json([
-            "message" => "Email dan Password yang diberikan tidak sesuai!"
-        ]);
+            'status' => 'failed',
+            'message' => 'Login failed, email & password did\'t match'
+        ], 400);
     }
 
     /**
