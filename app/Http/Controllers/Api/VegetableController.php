@@ -24,7 +24,10 @@ class VegetableController extends Controller
      */
     public function getAllVegetable(): JsonResponse
     {
-        $vegetables = Vegetable::with('types')->orderBy('created_at', 'asc')->get();
+        $vegetables = Vegetable::with(['types' => function ($query) {
+            $query->select('id', 'name', 'type_group_id');
+            $query->with('type_group:id,name');
+        }])->orderBy('created_at', 'asc')->get();
 
         if (count($vegetables) == 0) {
             return response()->json([
@@ -45,17 +48,21 @@ class VegetableController extends Controller
     public function getDetailVegetable($vegetable_id): JsonResponse
     {
         $user = Auth::user();
-        $vegetable = Vegetable::with('types')->where('id', $vegetable_id)->first();
+        $vegetable = Vegetable::with(['types' => function ($query) {
+            $query->select('id', 'name', 'type_group_id');
+            $query->with('type_group:id,name');
+        }])->where('id', $vegetable_id)->first();
 
-        $isSaved = Saved::where('user_id', $user->id)->where('vegetable_id', $vegetable->id)->exists();
-        $vegetable['is_saved'] = $isSaved;
-
-        if (!$vegetable) {
+        if ($vegetable == null) {
             return response()->json([
                 'status' => 'failed',
                 'message' => 'Vegetable not found'
             ], 404);
         }
+
+
+        $isSaved = Saved::where('user_id', $user->id)->where('vegetable_id', $vegetable->id)->exists();
+        $vegetable['is_saved'] = $isSaved;
 
         return response()->json([
             'status' => 'success',

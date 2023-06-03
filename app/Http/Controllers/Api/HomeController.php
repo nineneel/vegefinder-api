@@ -24,12 +24,15 @@ class HomeController extends Controller
     public function index(): JsonResponse
     {
         $user = Auth::user();
-        $histories = History::where('user_id', $user->id)->take(2)->get();
+        $vegetables = User::find($user->id)->vegetable_histories()->with(['types' => function ($query) {
+            $query->select('id', 'name', 'type_group_id');
+            $query->with('type_group:id,name');
+        }])->withPivot('created_at')->orderBy('histories.created_at', "DESC")->take(2)->get();
 
-        $types = Type::all();
+        $types = Type::select('id', 'name', 'description', 'type_group_id')->with('type_group:id,name')->get();
 
         return response()->json([
-            'histories' => $histories,
+            'histories' => $vegetables,
             'types' => $types
         ]);
     }
@@ -85,7 +88,9 @@ class HomeController extends Controller
         }
 
         $className =  $responseData["prediction"];
-        $vegetable = Vegetable::where('class_name', $className)->with('types')->first();
+        $vegetable = Vegetable::where('class_name', $className)->with(['types' => function ($query) {
+            $query->select('id', 'name');
+        }])->first();
 
         if (!$vegetable) {
             return response()->json([
@@ -116,7 +121,10 @@ class HomeController extends Controller
     public function histories(): JsonResponse
     {
         $user = Auth::user();
-        $vegetables = User::find($user->id)->vegetable_histories()->withPivot('created_at')->orderBy('histories.created_at', "DESC")->get();
+        $vegetables = User::find($user->id)->vegetable_histories()->with(['types' => function ($query) {
+            $query->select('id', 'name', 'type_group_id');
+            $query->with('type_group:id,name');
+        }])->withPivot('created_at')->orderBy('histories.created_at', "DESC")->get();
 
         return response()->json($vegetables);
     }
@@ -124,7 +132,10 @@ class HomeController extends Controller
     public function saveds(): JsonResponse
     {
         $user = Auth::user();
-        $vegetables = User::find($user->id)->vegetable_saveds->sortBy('created_at');
+        $vegetables = User::find($user->id)->vegetable_saveds()->with(['types' => function ($query) {
+            $query->select('id', 'name', 'type_group_id');
+            $query->with('type_group:id,name');
+        }])->orderBy('created_at')->get();
 
         return response()->json($vegetables);
     }
