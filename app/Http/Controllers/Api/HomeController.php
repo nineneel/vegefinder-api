@@ -58,7 +58,7 @@ class HomeController extends Controller
         try {
             $imageBytes = file_get_contents($image->getRealPath());
 
-            $predictUrl = "http://127.0.0.1:5000";
+            $predictUrl = "https://vege-image-classifier-pl6a2qwedq-et.a.run.app";
 
             $client = new Client();
 

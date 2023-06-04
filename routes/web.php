@@ -19,5 +19,3 @@ use Illuminate\Support\Facades\Storage;
 Route::get('/', function () {
     return view('welcome');
 });
-
-Route::post('/predict', [HomeController::class, 'predict'])->name('predict');
