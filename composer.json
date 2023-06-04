@@ -39,11 +39,6 @@
         }
     },
     "scripts": {
-        "post-install-cmd": [
-            "Illuminate\\Foundation\\ComposerScripts::postInstall",
-            "@php artisan optimize",
-            "composer update --ignore-platform-reqs"
-        ],
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover --ansi"
