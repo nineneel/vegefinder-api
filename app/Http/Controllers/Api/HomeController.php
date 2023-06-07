@@ -112,6 +112,24 @@ class HomeController extends Controller
         ], 200);
     }
 
+    public function homeHistories(): JsonResponse
+    {
+        $user = Auth::user();
+        $vegetables = User::find($user->id)->vegetable_histories()->with(['types' => function ($query) {
+            $query->select('id', 'name', 'type_group_id');
+            $query->with('type_group:id,name');
+        }])->withPivot('created_at')->orderBy('histories.created_at', "DESC")->take(2)->get();
+
+        return response()->json(["vegetable" => $vegetables]);
+    }
+
+
+    public function homeTypes(): JsonResponse
+    {
+        $types = Type::select('id', 'name', 'description', 'thumbnail', 'type_group_id')->with('type_group:id,name')->get();
+        return response()->json(["types" => $types]);
+    }
+
 
     /**
      * histories

@@ -10,6 +10,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
@@ -41,11 +42,21 @@ class UserController extends Controller
      */
     public function register(Request $request): JsonResponse
     {
-        $validatedData = $request->validate([
+        $validator = Validator::make($request->all(), [
             'name' => "required",
             'email' => "required|email|unique:users",
             'password' => "required|string|min:6|confirmed",
         ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'failed',
+                'message' => "register new user failed",
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $validatedData = $validator->validated();
 
         $validatedData['register_method'] = 'manual';
         $validatedData['avatar_id'] = $request->avatar;

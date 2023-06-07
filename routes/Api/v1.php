@@ -39,6 +39,8 @@ Route::middleware(['auth:api'])->group(function () {
     // Home Controller
     Route::controller(HomeController::class)->group(function () {
         Route::get('home', 'index');
+        Route::get('home/histories', 'homeHistories');
+        Route::get('home/types', 'homeTypes');
         Route::get('histories', 'histories');
         Route::get('saveds', 'saveds');
         Route::post('predict', 'predict');
