@@ -46,17 +46,20 @@ class HomeController extends Controller
      */
     public function predict(Request $request): JsonResponse
     {
+
         $image = $request->file('image');
 
         if ($image === null || $image->getClientOriginalName() === "") {
             return response()->json([
                 'status' => 'failed',
-                'message' => 'No file'
+                'message' => 'No file',
+                'image' => $image,
+                'request' => $request
             ], 400);
         }
 
         try {
-            $imageBytes = file_get_contents($image->getRealPath());
+            $imageBytes = file_get_contents($image->getPathname());
 
             $predictUrl = "https://vege-image-classifier-pl6a2qwedq-et.a.run.app";
 
