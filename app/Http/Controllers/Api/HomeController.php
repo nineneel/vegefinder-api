@@ -120,14 +120,14 @@ class HomeController extends Controller
             $query->with('type_group:id,name');
         }])->withPivot('created_at')->orderBy('histories.created_at', "DESC")->take(2)->get();
 
-        return response()->json(["vegetable" => $vegetables]);
+        return response()->json($vegetables);
     }
 
 
     public function homeTypes(): JsonResponse
     {
         $types = Type::select('id', 'name', 'description', 'thumbnail', 'type_group_id')->with('type_group:id,name')->get();
-        return response()->json(["types" => $types]);
+        return response()->json($types);
     }
 
 
