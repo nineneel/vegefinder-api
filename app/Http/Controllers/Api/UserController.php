@@ -22,13 +22,13 @@ class UserController extends Controller
      * @param  mixed $request
      * @return JsonResponse
      */
-    public function index(Request $request): JsonResponse
+    public function index(): JsonResponse
     {
         $user_id = Auth::user()->id;
         $user = User::where('id', $user_id)->with('avatar')->first();
-        $avatar = $user->avatar->file_name;
+        // $avatar = $user->avatar->file_name;
+        // $response['avatar'] = $avatar;
         $response = $user->only('id', 'name', 'email', 'api_token');
-        $response['avatar'] = $avatar;
         return response()->json($response);
     }
 

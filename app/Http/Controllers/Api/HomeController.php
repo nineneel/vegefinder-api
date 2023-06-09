@@ -59,7 +59,7 @@ class HomeController extends Controller
         }
 
         try {
-            $imageBytes = file_get_contents($image->getPathname());
+            $imageBytes = file_get_contents($image);
 
             $predictUrl = "https://vege-image-classifier-pl6a2qwedq-et.a.run.app";
 
@@ -92,7 +92,8 @@ class HomeController extends Controller
 
         $className =  $responseData["prediction"];
         $vegetable = Vegetable::where('class_name', $className)->with(['types' => function ($query) {
-            $query->select('id', 'name');
+            $query->select('id', 'name', 'type_group_id');
+            $query->with('type_group:id,name');
         }])->first();
 
         if (!$vegetable) {
