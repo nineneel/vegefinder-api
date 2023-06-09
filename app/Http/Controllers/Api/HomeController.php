@@ -31,6 +31,11 @@ class HomeController extends Controller
 
         $types = Type::select('id', 'name', 'description', 'type_group_id')->with('type_group:id,name')->get();
 
+        foreach ($vegetables as $vegetable) {
+            $isSaved = Saved::where('user_id', $user->id)->where('vegetable_id', $vegetable->id)->exists();
+            $vegetable['is_saved'] = $isSaved;
+        }
+
         return response()->json([
             'histories' => $vegetables,
             'types' => $types
@@ -105,6 +110,9 @@ class HomeController extends Controller
 
         $user = Auth::user();
 
+        $isSaved = Saved::where('user_id', $user->id)->where('vegetable_id', $vegetable->id)->exists();
+        $vegetable['is_saved'] = $isSaved;
+
         History::create([
             'user_id' => $user->id,
             'vegetable_id' => $vegetable->id
@@ -123,6 +131,11 @@ class HomeController extends Controller
             $query->select('id', 'name', 'type_group_id');
             $query->with('type_group:id,name');
         }])->withPivot('created_at')->orderBy('histories.created_at', "DESC")->take(2)->get();
+
+        foreach ($vegetables as $vegetable) {
+            $isSaved = Saved::where('user_id', $user->id)->where('vegetable_id', $vegetable->id)->exists();
+            $vegetable['is_saved'] = $isSaved;
+        }
 
         return response()->json($vegetables);
     }
@@ -148,6 +161,11 @@ class HomeController extends Controller
             $query->with('type_group:id,name');
         }])->withPivot('created_at')->orderBy('histories.created_at', "DESC")->get();
 
+        foreach ($vegetables as $vegetable) {
+            $isSaved = Saved::where('user_id', $user->id)->where('vegetable_id', $vegetable->id)->exists();
+            $vegetable['is_saved'] = $isSaved;
+        }
+
         return response()->json($vegetables);
     }
 
@@ -158,6 +176,11 @@ class HomeController extends Controller
             $query->select('id', 'name', 'type_group_id');
             $query->with('type_group:id,name');
         }])->orderBy('created_at')->get();
+
+        foreach ($vegetables as $vegetable) {
+            $isSaved = Saved::where('user_id', $user->id)->where('vegetable_id', $vegetable->id)->exists();
+            $vegetable['is_saved'] = $isSaved;
+        }
 
         return response()->json($vegetables);
     }

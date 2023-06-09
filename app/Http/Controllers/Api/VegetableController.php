@@ -24,10 +24,17 @@ class VegetableController extends Controller
      */
     public function getAllVegetable(): JsonResponse
     {
+        $user = Auth::user();
+
         $vegetables = Vegetable::with(['types' => function ($query) {
             $query->select('id', 'name', 'type_group_id');
             $query->with('type_group:id,name');
         }])->orderBy('created_at', 'asc')->get();
+
+        foreach ($vegetables as $vegetable) {
+            $isSaved = Saved::where('user_id', $user->id)->where('vegetable_id', $vegetable->id)->exists();
+            $vegetable['is_saved'] = $isSaved;
+        }
 
         if (count($vegetables) == 0) {
             return response()->json([
