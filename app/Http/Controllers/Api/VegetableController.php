@@ -52,13 +52,13 @@ class VegetableController extends Controller
      * @param  mixed $vegetable_id
      * @return JsonResponse
      */
-    public function getDetailVegetable($vegetable_id): JsonResponse
+    public function getDetailVegetable($vegetable_key): JsonResponse
     {
         $user = Auth::user();
         $vegetable = Vegetable::with(['types' => function ($query) {
             $query->select('id', 'name', 'type_group_id');
             $query->with('type_group:id,name');
-        }])->where('id', $vegetable_id)->first();
+        }])->where('id', $vegetable_key)->orWhere('class_name', $vegetable_key)->first();
 
         if ($vegetable == null) {
             return response()->json([
@@ -67,15 +67,21 @@ class VegetableController extends Controller
             ], 404);
         }
 
-
         $isSaved = Saved::where('user_id', $user->id)->where('vegetable_id', $vegetable->id)->exists();
         $vegetable['is_saved'] = $isSaved;
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Vegetable fetch successfully',
-            'vegetable' => $vegetable
-        ], 200);
+
+        return response()->json($vegetable);
+    }
+
+    public function saveHistory(int $vegetable_id, int $user_id): JsonResponse
+    {
+        History::create([
+            'user_id' => $user_id,
+            'vegetable_id' => $vegetable_id
+        ]);
+
+        return response()->json(true);
     }
 
     /**

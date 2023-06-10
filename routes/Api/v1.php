@@ -23,6 +23,10 @@ Route::controller(UserController::class)->group(function () {
     Route::get('avatars', 'getAvatars');
 });
 
+Route::controller(VegetableController::class)->group(function () {
+    Route::get('save-history/{vegetable_id}/{user_id}', 'saveHistory');
+});
+
 Route::middleware(['auth:api'])->group(function () {
     // User Controller
     Route::controller(UserController::class)->group(function () {
