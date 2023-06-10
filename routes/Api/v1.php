@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Route;
 Route::controller(UserController::class)->group(function () {
     Route::post('login', 'login');
     Route::post('register', 'register');
+    Route::get('avatars', 'getAvatars');
 });
 
 Route::middleware(['auth:api'])->group(function () {

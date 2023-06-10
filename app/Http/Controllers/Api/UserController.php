@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Avatar;
 use App\Models\User;
 use App\Models\UserRole;
 use Exception;
@@ -26,9 +27,13 @@ class UserController extends Controller
     {
         $user_id = Auth::user()->id;
         $user = User::where('id', $user_id)->with('avatar')->first();
-        // $avatar = $user->avatar->file_name;
-        // $response['avatar'] = $avatar;
         $response = $user->only('id', 'name', 'email', 'api_token');
+
+        if ($user->avatar != null) {
+            $avatar = $user->avatar->file_name;
+            $response['avatar'] = $avatar;
+        }
+
         return response()->json($response);
     }
 
@@ -134,5 +139,11 @@ class UserController extends Controller
         return response()->json([
             'message' => "logout success"
         ]);
+    }
+
+    public function getAvatars(): JsonResponse
+    {
+        $avatars = Avatar::all();
+        return response()->json($avatars);
     }
 }
