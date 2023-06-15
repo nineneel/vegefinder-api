@@ -42,95 +42,13 @@ class HomeController extends Controller
         ]);
     }
 
-
-    /**
-     * predict
-     *
-     * @param  mixed $request
-     * @return JsonResponse
-     */
-    public function predict(Request $request): JsonResponse
-    {
-
-        $image = $request->file('image');
-
-        if ($image === null || $image->getClientOriginalName() === "") {
-            return response()->json([
-                'status' => 'failed',
-                'message' => 'No file',
-                'image' => $image,
-                'request' => $request
-            ], 400);
-        }
-
-        try {
-            $imageBytes = file_get_contents($image);
-
-            $predictUrl = "https://vege-image-classifier-pl6a2qwedq-et.a.run.app";
-
-            $client = new Client();
-
-            $response = $client->post($predictUrl, [
-                'multipart' => [
-                    [
-                        'name' => 'file',
-                        'contents' => $imageBytes,
-                        'filename' => $image->getClientOriginalName()
-                    ]
-                ]
-            ]);
-        } catch (Exception $e) {
-            return response()->json([
-                'status' => 'failed',
-                'message' => $e->getMessage()
-            ], 500);
-        }
-
-        $responseData = json_decode($response->getBody(), true);
-
-        if ($responseData['status'] === 'failed') {
-            return response()->json([
-                'status' => 'failed',
-                'message' => "Class name not found"
-            ], 404);
-        }
-
-        $className =  $responseData["prediction"];
-        $vegetable = Vegetable::where('class_name', $className)->with(['types' => function ($query) {
-            $query->select('id', 'name', 'type_group_id');
-            $query->with('type_group:id,name');
-        }])->first();
-
-        if (!$vegetable) {
-            return response()->json([
-                'status' => 'failed',
-                'message' => "These Vegetable do not match our records."
-            ], 404);
-        }
-
-        $user = Auth::user();
-
-        $isSaved = Saved::where('user_id', $user->id)->where('vegetable_id', $vegetable->id)->exists();
-        $vegetable['is_saved'] = $isSaved;
-
-        History::create([
-            'user_id' => $user->id,
-            'vegetable_id' => $vegetable->id
-        ]);
-
-        return response()->json([
-            'status' => 'success',
-            "vegetable" => $vegetable
-        ], 200);
-    }
-
     public function homeHistories(): JsonResponse
     {
         $user = Auth::user();
         $vegetables = User::find($user->id)->vegetable_histories()->with(['types' => function ($query) {
             $query->select('id', 'name', 'type_group_id');
             $query->with('type_group:id,name');
-        }])->withPivot('created_at')->orderBy('histories.created_at', "DESC")->take(2)->get();
+        }])->withPivot('created_at')->orderBy('histories.created_at', "DESC")->take(5)->get();
 
         foreach ($vegetables as $vegetable) {
             $isSaved = Saved::where('user_id', $user->id)->where('vegetable_id', $vegetable->id)->exists();
@@ -143,7 +61,7 @@ class HomeController extends Controller
 
     public function homeTypes(): JsonResponse
     {
-        $types = Type::select('id', 'name', 'description', 'thumbnail', 'type_group_id')->with('type_group:id,name')->get();
+        $types = Type::select('id', 'name', 'description', 'thumbnail', 'type_group_id')->with('type_group:id,name')->inRandomOrder()->take(4)->get();
         return response()->json($types);
     }
 
@@ -159,7 +77,7 @@ class HomeController extends Controller
         $vegetables = User::find($user->id)->vegetable_histories()->with(['types' => function ($query) {
             $query->select('id', 'name', 'type_group_id');
             $query->with('type_group:id,name');
-        }])->withPivot('created_at')->orderBy('histories.created_at', "DESC")->get();
+        }])->withPivot('created_at AS history_created_at')->orderBy('histories.created_at', "DESC")->get();
 
         foreach ($vegetables as $vegetable) {
             $isSaved = Saved::where('user_id', $user->id)->where('vegetable_id', $vegetable->id)->exists();
@@ -172,13 +90,18 @@ class HomeController extends Controller
     public function saveds(): JsonResponse
     {
         $user = Auth::user();
-        $vegetables = User::find($user->id)->vegetable_saveds()->with(['types' => function ($query) {
-            $query->select('id', 'name', 'type_group_id');
-            $query->with('type_group:id,name');
-        }])->orderBy('created_at')->get();
+        $vegetables = User::find($user->id)->vegetable_saveds()
+            ->orderBy('saveds.created_at', "DESC")
+            ->with(['types' => function ($query) {
+                $query->select('id', 'name', 'type_group_id');
+                $query->with('type_group:id,name');
+            }])
+            ->get();
 
         foreach ($vegetables as $vegetable) {
-            $isSaved = Saved::where('user_id', $user->id)->where('vegetable_id', $vegetable->id)->exists();
+            $isSaved = Saved::where('user_id', $user->id)
+                ->where('vegetable_id', $vegetable->id)
+                ->exists();
             $vegetable['is_saved'] = $isSaved;
         }
 

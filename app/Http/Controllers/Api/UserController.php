@@ -113,10 +113,23 @@ class UserController extends Controller
 
             User::find($user->id)->forceFill(['api_token' => $token])->save();
 
+            $user_data = [
+                "id" => $user->id,
+                "name" => $user->name,
+                "email" => $user->email,
+                "api_token" => $token
+            ];
+
+            if ($user->avatar != null) {
+                $avatar = $user->avatar->file_name;
+                $user_data['avatar'] = $avatar;
+            }
+
             return response()->json([
                 'status' => 'success',
                 'message' => 'Login successfully',
-                'token' => $token
+                'token' => $token,
+                'user' => $user_data
             ], 200);
         }
 
