@@ -65,6 +65,12 @@ class HomeController extends Controller
         return response()->json($types);
     }
 
+    public function types(): JsonResponse
+    {
+        $types = Type::select('id', 'name', 'description', 'thumbnail', 'type_group_id')->with('type_group:id,name')->get();
+        return response()->json($types);
+    }
+
 
     /**
      * histories

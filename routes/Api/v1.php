@@ -46,6 +46,7 @@ Route::middleware(['auth:api'])->group(function () {
         Route::get('home', 'index');
         Route::get('home/histories', 'homeHistories');
         Route::get('home/types', 'homeTypes');
+        Route::get('types', 'types');
         Route::get('histories', 'histories');
         Route::get('saveds', 'saveds');
         Route::post('predict', 'predict');
