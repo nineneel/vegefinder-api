@@ -7,10 +7,8 @@
 -   [Installation](#installation)
     -   [Google Cloud Storage](#google-cloud-storage)
     -   [Laravel](#laravel)
--   [Admin Dashboard](#admin-dashboard)
+-   [Admin Panel](#admin-dashboard)
 -   [API Usage](#api-usage)
-    -   [Endpoint](#endpoints)
-    -   [Endpoint that required Authentication](#endpoints)
 -   [License](#license)
 
 ## Description
@@ -196,6 +194,51 @@ status: `400 Bad Request`
     "status": "failed",
     "message": "Login failed, email & password did't match"
 }
+```
+
+</details>
+
+<details>
+ <summary>Get Avatars | <code>GET</code> <code><b>/avatars</b></code></summary>
+
+##### URL
+
+`/avatars`
+
+##### Method
+
+`GET`
+
+##### Parameters
+
+`N/A`
+
+##### Responses
+
+status: `200 OK`
+
+```json
+[
+    {
+        "id": 9,
+        "name": "Broccboy",
+        "file_name": "avatar/fotor_2023-6-11_13_42_54.png",
+        "created_at": "2023-05-26T01:22:12.000000Z",
+        "updated_at": "2023-06-10T23:51:50.000000Z"
+    },
+    {
+        "id": 10,
+        "name": "Eggcellent",
+        "file_name": "avatar/fotor_2023-6-11_13_43_19.png",
+        "created_at": "2023-05-26T01:40:09.000000Z",
+        "updated_at": "2023-06-10T23:52:38.000000Z"
+    },
+    {
+        "id": 11,
+        "name": "Chill",
+        "file_name": "a.."
+    }
+]
 ```
 
 </details>
@@ -472,76 +515,6 @@ status : `200 OK`
     "email": "user@example.com",
     "api_token": "346c2573164f1d5afa8db05f58935eeb.b58996c504c5638798eb6b511e6f49af",
     "avatar": "avatar/avatar1.png"
-}
-```
-
-</details>
-
-<details>
- <summary>Get Prediction | <code>POST</code> <code><b>/predict</b></code></summary>
-
-##### URL
-
-`/predict`
-
-##### Method
-
-`POST`
-
-##### Parameters
-
-> | key   | type     | data type | description |
-> | ----- | -------- | --------- | ----------- |
-> | image | required | file      | N/A         |
-
-##### Responses
-
-status : `200 OK`
-
-```json
-{
-    "status": "success",
-    "vegetable": {
-        "id": 1,
-        "class_name": "bawang-bombay",
-        "name": "Bawang Bombay",
-        "other_name": null,
-        "thumbnail": "vegetable-thumbnail/input.jpeg",
-        "images": ["vegetable-images/input.jpeg"],
-        "description": "Bawang bombai (Latin: Allium Cepa Linnaeus) adalah jenis bawang yang paling banyak dan luas dibudidayakan, dipakai sebagai bumbu maupun bahan masakan, berbentuk bulat besar dan berdaging tebal. Bawang bombai biasa digunakan dalam memasak makanan di Indonesia, tidak hanya digunakan sebagai hiasan tetapi juga bagian dari masakan karena bentuknya yang besar dan tebal dagingnya. Disebut bawang bombai karena dibawa oleh pedagang-pedagang yang berasal dari kota Bombai (Mumbai sekarang) di India ke Indonesia",
-        "description_source": "https://id.wikipedia.org/wiki/Bawang_bombai",
-        "how_to_plant": "1. Pilih waktu yang tepat: Pilih musim kering atau kemarau, hindari memberi terlalu banyak air.\r\n2. Persiapan yang baik: Pastikan bawang bombay mendapatkan sinar matahari langsung, suhu ideal 18-20 derajat Celsius, perhatikan tanah yang gembur dengan banyak humus.\r\n3. Siapkan bibit yang akan digunakan: Pilih bawang bombay berkualitas dan berukuran besar, cuci bersih dan simpan dalam tempat lembap selama 2-3 minggu, setelah muncul tunas, tanam bibit dalam polybag dengan kedalaman 2-3 cm.\r\n4. Persiapkan tanah bedengan: Buat bedengan setebal 10-15 cm dengan lebar 1 meter, lakukan penggemburan tanah, beri pupuk kompos atau kandang seminggu sebelum penanaman.\r\n5. Penanaman bibit bawang bombay: Potong ujung umbi dan keringkan sebelum menanam, jaga jarak antar bibit 10-40 cm.",
-        "how_to_plant_source": "https://www.sehatq.com/review/cara-menanam-bawang-bombay",
-        "plant_care": "1. Siram secara berkala pada awal pertumbuhan.\n2. Siram ketika daun terlihat cukup kering.\n3. Lakukan penyiangan tiga minggu setelah penanaman dan ulangi enam minggu setelahnya.\n4. Jaga kebersihan tanaman dengan menghilangkan gulma dan tanaman liar di sekitarnya.\n5. Pantau dan kendalikan hama yang mungkin muncul.\n6. Gunakan pestisida organik yang aman untuk tubuh.\n7. Lakukan pembersihan hama setiap 7-10 hari.",
-        "plant_care_source": "https://www.sehatq.com/review/cara-menanam-bawang-bombay",
-        "plant_disease": "1. Penyakit busuk\r\n2. Bercak ungu\r\n3. Embun upas",
-        "plant_disease_source": "https://dispertan.bantenprov.go.id/lama/read/artikel/566/Budidaya-Tanaman-Bombai.html#:~:text=Contoh%20penyakitnyang%20menyerang%20tanaman%20bawang,bercak%20ungu%2C%20dan%20embun%20upas.",
-        "created_at": "2023-05-26T15:24:30.000000Z",
-        "updated_at": "2023-05-31T04:25:34.000000Z",
-        "types": [
-            {
-                "id": 1,
-                "name": "Iklim Tropis"
-            },
-            {
-                "id": 5,
-                "name": "Iklim Sub-Tropis"
-            },
-            {
-                "id": 6,
-                "name": "Hidroponik"
-            }
-        ]
-    }
-}
-```
-
-status: `400 Bad Request`
-
-```json
-{
-    "status": "failed",
-    "message": "No file"
 }
 ```
 
